@@ -1,0 +1,17 @@
+{
+  "name": "RESET — Mindful Distraction & Grounding",
+  "short_name": "RESET",
+  "description": "Interrupt overthinking loops with tiny grounding actions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080b11",
+  "theme_color": "#080b11",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
