@@ -1,20 +1,23 @@
 import React from 'react';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Music2 } from 'lucide-react';
 import type { ActivityType, UserStats } from '../../types';
 import { QuickActionCard } from '../../components/QuickActionCard';
 import { TodayStats } from './TodayStats';
+import { QuoteCard } from '../quotes/QuoteCard';
 import { gentleAudio } from '../../utils/GentleAudio';
 
 interface HomeScreenProps {
   stats: UserStats;
   onSelectActivity: (activity: ActivityType) => void;
   onInstantReset: () => void;
+  onOpenTunes: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   stats,
   onSelectActivity,
   onInstantReset,
+  onOpenTunes,
 }) => {
   const handlePrimaryClick = () => {
     gentleAudio.playTapSound();
@@ -31,7 +34,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="w-full flex flex-col items-center">
       {/* Hero Branding & Purpose */}
-      <div className="w-full text-center pt-2 pb-6">
+      <div className="w-full text-center pt-2 pb-5">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-medium text-indigo-300 mb-3 shadow-inner">
           <Sparkles className="w-3.5 h-3.5 text-sky-400" />
           <span>Grounding & Distraction</span>
@@ -44,8 +47,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           “Stop the loop. Do one thing.”
         </p>
 
-        {/* Core grounding anchor quote answering: "What should I do when I start overthinking?" */}
-        <div className="mt-5 p-4 rounded-2xl bg-[#111726]/80 border border-slate-800/90 text-left relative overflow-hidden shadow-sm">
+        {/* Core grounding anchor quote */}
+        <div className="mt-4 p-4 rounded-2xl bg-[#111726]/80 border border-slate-800/90 text-left relative overflow-hidden shadow-sm">
           <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-indigo-500 to-sky-400" />
           <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
             What to do when overthinking starts:
@@ -56,8 +59,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
+      {/* Energizing Motivational Quote Banner */}
+      <QuoteCard />
+
       {/* Hero Primary Button: "I'M OVERTHINKING →" */}
-      <div className="w-full mb-7">
+      <div className="w-full mb-6">
         <button
           onClick={handlePrimaryClick}
           className="group w-full py-4 px-6 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white font-bold text-base sm:text-lg tracking-wide shadow-xl shadow-indigo-600/30 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer focus:outline-none focus:ring-4 focus:ring-indigo-500/30"
@@ -75,15 +81,36 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </p>
       </div>
 
-      {/* Four Quick-Action Cards */}
+      {/* Quick Action Cards Grid */}
       <div className="w-full space-y-2.5">
         <div className="flex items-center justify-between px-1 mb-1">
           <span className="text-xs uppercase tracking-wider font-semibold text-slate-400">
             Pick a quick reset
           </span>
-          <span className="text-[11px] text-slate-400">2–5 min</span>
+          <span className="text-[11px] text-slate-400">1–5 min</span>
         </div>
 
+        {/* Rapid Math Flow */}
+        <QuickActionCard
+          id="math"
+          icon="🔢"
+          title="Rapid Math"
+          subtitle="Solve small problems fast"
+          tag="Emerging"
+          onSelect={handleCardClick}
+        />
+
+        {/* Quick Sketch Challenge */}
+        <QuickActionCard
+          id="sketch"
+          icon="🎨"
+          title="Quick Sketch"
+          subtitle="Draw prompt in limited time"
+          tag="Creative"
+          onSelect={handleCardClick}
+        />
+
+        {/* 60s Breathing */}
         <QuickActionCard
           id="breathe"
           icon="🌬️"
@@ -93,6 +120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onSelect={handleCardClick}
         />
 
+        {/* Reflex Game */}
         <QuickActionCard
           id="reflex"
           icon="⚡"
@@ -102,6 +130,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onSelect={handleCardClick}
         />
 
+        {/* Focus Redirect */}
         <QuickActionCard
           id="focus"
           icon="⏱️"
@@ -111,6 +140,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onSelect={handleCardClick}
         />
 
+        {/* Thought Dump */}
         <QuickActionCard
           id="thought-dump"
           icon="📝"
@@ -120,6 +150,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onSelect={handleCardClick}
         />
       </div>
+
+      {/* Ambient Soundscapes Promo Bar */}
+      <button
+        onClick={onOpenTunes}
+        className="w-full mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-[#111726] to-[#161f38] border border-sky-500/30 hover:border-sky-400/60 flex items-center justify-between text-left transition-all active:scale-[0.98] cursor-pointer group shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 group-hover:scale-105 transition-transform">
+            <Music2 className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-white group-hover:text-sky-300 transition-colors">
+              Stop Overthinking Tunes
+            </h3>
+            <p className="text-[11px] text-slate-400">
+              Zen Harmonics, 10Hz Alpha Waves & Gentle Rain
+            </p>
+          </div>
+        </div>
+        <span className="text-[11px] font-semibold text-sky-400 bg-sky-500/10 px-2 py-1 rounded-lg border border-sky-500/20">
+          Listen 🎵
+        </span>
+      </button>
 
       {/* Today Statistics */}
       <TodayStats stats={stats} />

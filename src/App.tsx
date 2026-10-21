@@ -9,11 +9,17 @@ import { BreathingReset } from './features/breathe/BreathingReset';
 import { ReflexGame } from './features/reflex/ReflexGame';
 import { FocusRedirect } from './features/focus/FocusRedirect';
 import { ThoughtDump } from './features/thought-dump/ThoughtDump';
+import { RapidMath } from './features/math/RapidMath';
+import { QuickSketch } from './features/sketch/QuickSketch';
+import { AmbientTunesPlayer } from './features/audio/AmbientTunesPlayer';
+import { ambientSynth } from './features/audio/AmbientSynth';
 import { gentleAudio } from './utils/GentleAudio';
 
 export const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isTunesOpen, setIsTunesOpen] = useState(false);
+  const [isTunesPlaying, setIsTunesPlaying] = useState(false);
   const [returnNotice, setReturnNotice] = useState<string | null>(null);
 
   const {
@@ -32,17 +38,32 @@ export const App: React.FC = () => {
     gentleAudio.setEnabled(settings.soundEnabled);
   }, [settings.soundEnabled]);
 
-  // "I'M OVERTHINKING →" handler: Pick a random activity
+  // Periodic poll or sync for ambient synth status
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTunesPlaying(ambientSynth.isPlaying());
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // "I'M OVERTHINKING →" handler: Pick a random activity from all 6 reset modules
   const handleInstantReset = () => {
-    const activities: ActivityType[] = ['breathe', 'reflex', 'focus', 'thought-dump'];
+    const activities: ActivityType[] = [
+      'breathe',
+      'reflex',
+      'focus',
+      'thought-dump',
+      'math',
+      'sketch',
+    ];
     const randomIndex = Math.floor(Math.random() * activities.length);
     const chosen = activities[randomIndex];
     setCurrentScreen(chosen);
   };
 
-  // Another 2-minute reset handler: Pick a quick reset (Breathe or Reflex)
+  // Another 2-minute reset handler: Pick a quick reset (Breathe, Reflex, or Math)
   const handleAnotherReset = () => {
-    const shortActivities: ActivityType[] = ['breathe', 'reflex'];
+    const shortActivities: ActivityType[] = ['breathe', 'reflex', 'math'];
     const chosen = shortActivities[Math.floor(Math.random() * shortActivities.length)];
     setCurrentScreen(chosen);
   };
@@ -67,6 +88,8 @@ export const App: React.FC = () => {
         currentScreen={currentScreen}
         onNavigateHome={() => setCurrentScreen('home')}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        onOpenTunes={() => setIsTunesOpen(true)}
+        isTunesPlaying={isTunesPlaying}
       />
 
       {/* Main Content Area */}
@@ -84,6 +107,23 @@ export const App: React.FC = () => {
             stats={stats}
             onSelectActivity={(act) => setCurrentScreen(act)}
             onInstantReset={handleInstantReset}
+            onOpenTunes={() => setIsTunesOpen(true)}
+          />
+        )}
+
+        {currentScreen === 'math' && (
+          <RapidMath
+            onComplete={(minutes) => addReset(minutes)}
+            onReturnHome={handleReturnHome}
+            onAnotherReset={handleAnotherReset}
+          />
+        )}
+
+        {currentScreen === 'sketch' && (
+          <QuickSketch
+            onComplete={(minutes) => addReset(minutes)}
+            onReturnHome={handleReturnHome}
+            onAnotherReset={handleAnotherReset}
           />
         )}
 
@@ -128,6 +168,14 @@ export const App: React.FC = () => {
 
       {/* Safety Disclaimer Footer */}
       <FooterDisclaimer />
+
+      {/* Ambient Tunes Soundscape Modal */}
+      {isTunesOpen && (
+        <AmbientTunesPlayer
+          isOpen={isTunesOpen}
+          onClose={() => setIsTunesOpen(false)}
+        />
+      )}
 
       {/* Persistent Settings Modal */}
       <SettingsModal

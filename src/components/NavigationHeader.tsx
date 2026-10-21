@@ -1,17 +1,21 @@
 import React from 'react';
-import { ArrowLeft, Settings } from 'lucide-react';
+import { ArrowLeft, Settings, Music2 } from 'lucide-react';
 import type { ScreenType } from '../types';
 
 interface NavigationHeaderProps {
   currentScreen: ScreenType;
   onNavigateHome: () => void;
   onOpenSettings: () => void;
+  onOpenTunes: () => void;
+  isTunesPlaying: boolean;
 }
 
 export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
   currentScreen,
   onNavigateHome,
   onOpenSettings,
+  onOpenTunes,
+  isTunesPlaying,
 }) => {
   const isHome = currentScreen === 'home';
 
@@ -24,7 +28,7 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
             <button
               onClick={onNavigateHome}
               aria-label="Back to home"
-              className="p-2 -ml-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="p-2 -ml-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -51,12 +55,28 @@ export const NavigationHeader: React.FC<NavigationHeaderProps> = ({
           </span>
         </button>
 
-        {/* Right: Settings */}
-        <div className="w-10 flex items-center justify-end">
+        {/* Right: Ambient Tunes & Settings */}
+        <div className="flex items-center gap-1 justify-end">
+          <button
+            onClick={onOpenTunes}
+            aria-label="Stop overthinking tunes"
+            title="Stop overthinking tunes"
+            className={`p-2 rounded-xl active:scale-95 transition-all focus:outline-none cursor-pointer relative ${
+              isTunesPlaying
+                ? 'text-sky-300 bg-indigo-500/20 ring-1 ring-sky-400/40'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Music2 className="w-4 h-4" />
+            {isTunesPlaying && (
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            )}
+          </button>
+
           <button
             onClick={onOpenSettings}
             aria-label="Open settings"
-            className="p-2 -mr-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+            className="p-2 -mr-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50 cursor-pointer"
           >
             <Settings className="w-5 h-5" />
           </button>

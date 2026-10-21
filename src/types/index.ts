@@ -1,4 +1,4 @@
-export type ActivityType = 'breathe' | 'reflex' | 'focus' | 'thought-dump';
+export type ActivityType = 'breathe' | 'reflex' | 'focus' | 'thought-dump' | 'math' | 'sketch';
 
 export type ScreenType = 'home' | ActivityType;
 
@@ -25,4 +25,21 @@ export interface FocusTaskItem {
   title: string;
   description: string;
   detail: string;
+}
+
+export type AmbientTrackId = 'zen' | 'alpha' | 'rain' | 'cosmic';
+
+export interface AmbientTrack {
+  id: AmbientTrackId;
+  name: string;
+  subtitle: string;
+  icon: string;
+}
+
+export interface SketchPrompt {
+  id: string;
+  title: string;
+  icon: string;
+  hint: string;
+  durationSeconds: number;
 }
