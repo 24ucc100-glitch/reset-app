@@ -11,14 +11,27 @@ interface QuickSketchProps {
 }
 
 const PALETTE = [
+  // Row 1: Cool & Neutral Tones
   { name: 'White', hex: '#ffffff' },
+  { name: 'Silver Slate', hex: '#cbd5e1' },
   { name: 'Sky Blue', hex: '#38bdf8' },
-  { name: 'Indigo', hex: '#818cf8' },
-  { name: 'Emerald', hex: '#34d399' },
-  { name: 'Sun Yellow', hex: '#facc15' },
-  { name: 'Coral', hex: '#fb923c' },
-  { name: 'Rose', hex: '#f43f5e' },
+  { name: 'Cyan Teal', hex: '#06b6d4' },
+  { name: 'Electric Blue', hex: '#3b82f6' },
+  { name: 'Lavender', hex: '#c084fc' },
+  { name: 'Deep Indigo', hex: '#818cf8' },
+  { name: 'Violet', hex: '#a855f7' },
   { name: 'Eraser', hex: '#0f172a' },
+
+  // Row 2: Warm, Vibrant & Botanical Tones
+  { name: 'Mint Green', hex: '#34d399' },
+  { name: 'Emerald', hex: '#10b981' },
+  { name: 'Lime Green', hex: '#a3e635' },
+  { name: 'Sun Yellow', hex: '#facc15' },
+  { name: 'Warm Amber', hex: '#f59e0b' },
+  { name: 'Tangerine', hex: '#fb923c' },
+  { name: 'Crimson Red', hex: '#ef4444' },
+  { name: 'Soft Rose', hex: '#f43f5e' },
+  { name: 'Hot Pink', hex: '#ec4899' },
 ];
 
 const BRUSH_SIZES = [
@@ -328,10 +341,37 @@ export const QuickSketch: React.FC<QuickSketchProps> = ({
       </div>
 
       {/* Color Palette & Brush Sizing */}
-      <div className="w-full max-w-sm space-y-2.5 px-1">
-        {/* Color swatches */}
-        <div className="flex items-center justify-between p-2 rounded-2xl bg-[#111726] border border-slate-800">
-          <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
+      <div className="w-full max-w-sm space-y-2 px-1">
+        <div className="p-2.5 rounded-2xl bg-[#111726] border border-slate-800 space-y-2">
+          {/* Top Bar: Label & Brush Sizes */}
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              Colors ({PALETTE.length - 1} + Custom)
+            </span>
+
+            <div className="flex items-center gap-1.5 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+              <span className="text-[10px] text-slate-400 mr-1 font-medium">Brush:</span>
+              {BRUSH_SIZES.map((b) => (
+                <button
+                  key={b.size}
+                  onClick={() => {
+                    setBrushSize(b.size);
+                    gentleAudio.playTapSound();
+                  }}
+                  className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center ${
+                    brushSize === b.size
+                      ? 'bg-sky-500 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {b.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color swatches in a responsive 2-row grid */}
+          <div className="grid grid-cols-10 gap-1.5 pt-1">
             {PALETTE.map((item) => {
               const isSelected = color === item.hex;
               const isEraser = item.name === 'Eraser';
@@ -345,34 +385,37 @@ export const QuickSketch: React.FC<QuickSketchProps> = ({
                   }}
                   title={item.name}
                   className={`w-7 h-7 rounded-full transition-all cursor-pointer flex items-center justify-center ${
-                    isSelected ? 'ring-2 ring-sky-400 scale-110 shadow-md' : 'opacity-85 hover:opacity-100'
+                    isSelected
+                      ? 'ring-2 ring-sky-400 scale-110 shadow-md shadow-sky-500/25 z-10'
+                      : 'opacity-85 hover:opacity-100 hover:scale-105'
                   }`}
                   style={{ backgroundColor: item.hex }}
                 >
-                  {isEraser && <span className="text-[10px]">🧹</span>}
+                  {isEraser && <span className="text-[11px]">🧹</span>}
                 </button>
               );
             })}
-          </div>
 
-          {/* Brush sizes */}
-          <div className="flex items-center gap-1 pl-2 border-l border-slate-700/80">
-            {BRUSH_SIZES.map((b) => (
-              <button
-                key={b.size}
-                onClick={() => {
-                  setBrushSize(b.size);
+            {/* Custom Color Input Wheel */}
+            <label
+              title="Custom RGB Color Picker"
+              className={`w-7 h-7 rounded-full transition-all cursor-pointer flex items-center justify-center relative bg-gradient-to-tr from-rose-500 via-amber-400 to-sky-400 border border-white/40 ${
+                !PALETTE.some((p) => p.hex === color)
+                  ? 'ring-2 ring-sky-400 scale-110 shadow-md shadow-sky-500/25 z-10'
+                  : 'opacity-90 hover:opacity-100 hover:scale-105'
+              }`}
+            >
+              <span className="text-[10px] font-black text-slate-900 select-none">🎨</span>
+              <input
+                type="color"
+                value={color}
+                onChange={(e) => {
+                  setColor(e.target.value);
                   gentleAudio.playTapSound();
                 }}
-                className={`w-6 h-6 rounded-lg text-[10px] font-bold transition-all cursor-pointer flex items-center justify-center ${
-                  brushSize === b.size
-                    ? 'bg-sky-500 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                {b.label[0]}
-              </button>
-            ))}
+                className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+              />
+            </label>
           </div>
         </div>
 
